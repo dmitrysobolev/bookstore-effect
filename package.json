@@ -1,0 +1,28 @@
+{
+  "name": "bookstore",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@effect/platform": "^0.87.7",
+    "@effect/platform-node": "^0.88.11",
+    "@effect/platform-node-shared": "^0.42.11",
+    "@effect/schema": "^0.75.5",
+    "effect": "^3.16.12",
+    "mongodb": "^6.17.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.10",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  }
+}
