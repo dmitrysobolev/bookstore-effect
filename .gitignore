@@ -123,3 +123,4 @@ bookstore_test
 temp/
 tmp/
 *.tmp
+server.log
