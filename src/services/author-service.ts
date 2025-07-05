@@ -9,23 +9,24 @@ import {
   CreateAuthorRequest,
   UpdateAuthorRequest,
 } from "../models/author";
+import { AppError, BusinessError, NotFoundError } from "../errors";
 
 export interface AuthorService {
-  getAllAuthors: () => Effect.Effect<Author[], Error>;
-  getAuthorById: (id: AuthorId) => Effect.Effect<Option.Option<Author>, Error>;
-  getAuthorsByIds: (ids: AuthorId[]) => Effect.Effect<Author[], Error>;
-  createAuthor: (author: CreateAuthorRequest) => Effect.Effect<Author, Error>;
+  getAllAuthors: () => Effect.Effect<Author[], AppError>;
+  getAuthorById: (id: AuthorId) => Effect.Effect<Author, AppError>;
+  getAuthorsByIds: (ids: AuthorId[]) => Effect.Effect<Author[], AppError>;
+  createAuthor: (author: CreateAuthorRequest) => Effect.Effect<Author, AppError>;
   updateAuthor: (
     id: AuthorId,
     author: UpdateAuthorRequest,
-  ) => Effect.Effect<Option.Option<Author>, Error>;
-  deleteAuthor: (id: AuthorId) => Effect.Effect<boolean, Error>;
-  searchAuthors: (query: string) => Effect.Effect<Author[], Error>;
+  ) => Effect.Effect<Author, AppError>;
+  deleteAuthor: (id: AuthorId) => Effect.Effect<void, AppError>;
+  searchAuthors: (query: string) => Effect.Effect<Author[], AppError>;
   getAuthorsByNationality: (
     nationality: string,
-  ) => Effect.Effect<Author[], Error>;
-  validateAuthorExists: (id: AuthorId) => Effect.Effect<boolean, Error>;
-  getAuthorsByName: (name: string) => Effect.Effect<Author[], Error>;
+  ) => Effect.Effect<Author[], AppError>;
+  validateAuthorExists: (id: AuthorId) => Effect.Effect<boolean, AppError>;
+  getAuthorsByName: (name: string) => Effect.Effect<Author[], AppError>;
 }
 
 export const AuthorService = Context.GenericTag<AuthorService>("AuthorService");
@@ -51,8 +52,10 @@ const make = Effect.gen(function* () {
       );
 
       if (duplicateAuthor) {
-        yield* Effect.fail(
-          new Error(`Author with name "${authorData.fullName}" already exists`),
+        return yield* Effect.fail(
+          new BusinessError({
+            message: `Author with name "${authorData.fullName}" already exists`,
+          }),
         );
       }
 
@@ -73,10 +76,10 @@ const make = Effect.gen(function* () {
         );
 
         if (duplicateAuthor) {
-          yield* Effect.fail(
-            new Error(
-              `Author with name "${updateData.fullName}" already exists`,
-            ),
+          return yield* Effect.fail(
+            new BusinessError({
+              message: `Author with name "${updateData.fullName}" already exists`,
+            }),
           );
         }
       }
@@ -108,7 +111,10 @@ const make = Effect.gen(function* () {
     authorRepository.findByNationality(nationality);
 
   const validateAuthorExists = (id: AuthorId) =>
-    authorRepository.findById(id).pipe(Effect.map(Option.isSome));
+    authorRepository.findById(id).pipe(
+      Effect.as(true),
+      Effect.catchTag("NotFoundError", () => Effect.succeed(false)),
+    );
 
   const getAuthorsByName = (name: string) => authorRepository.findByName(name);
 

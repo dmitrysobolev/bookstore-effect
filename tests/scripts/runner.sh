@@ -26,6 +26,11 @@ cleanup() {
         kill $SERVER_PID 2>/dev/null || true
         wait $SERVER_PID 2>/dev/null || true
     fi
+
+    # Run global teardown
+    echo -e "${BLUE}🔧 Running global teardown...${NC}"
+    npx ts-node ../global-teardown.ts
+
     echo -e "${GREEN}✓ Cleanup completed${NC}"
 }
 
@@ -61,6 +66,10 @@ wait_for_server() {
 start_server() {
     echo -e "${BLUE}🚀 Starting Bookstore API server...${NC}"
 
+    # Run global setup
+    echo -e "${BLUE}🔧 Running global setup...${NC}"
+    npx ts-node ../global-setup.ts
+
     # Check if server is already running
     if check_server; then
         echo -e "${YELLOW}⚠️  Server is already running on port $SERVER_PORT${NC}"
@@ -72,7 +81,7 @@ start_server() {
     echo -e "${BLUE}🔨 Building project...${NC}"
     if ! npm run build 2>/dev/null; then
         echo -e "${YELLOW}⚠️  Build failed, trying to compile simple-server directly...${NC}"
-        npx tsc src/simple-server.ts --outDir dist --target ES2020 --module CommonJS --esModuleInterop --allowSyntheticDefaultImports --strict --skipLibCheck
+        npx tsc ../../src/simple-server.ts --outDir ../../dist --target ES2020 --module CommonJS --esModuleInterop --allowSyntheticDefaultImports --strict --skipLibCheck
     fi
 
     # Start the server in development mode

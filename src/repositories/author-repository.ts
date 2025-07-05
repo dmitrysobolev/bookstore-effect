@@ -1,121 +1,210 @@
-import { Context, Effect, Layer, Option } from "effect"
-import { ObjectId } from "mongodb"
-import { MongoDB, MongoDBLive } from "../database"
-import { Author, AuthorId, CreateAuthorRequest, UpdateAuthorRequest } from "../models/author"
+import { Context, Effect, Layer, Option } from "effect";
+import { ObjectId } from "mongodb";
+import { MongoDB, MongoDBLive } from "../database";
+import {
+  Author,
+  AuthorId,
+  CreateAuthorRequest,
+  UpdateAuthorRequest,
+} from "../models/author";
+import { DatabaseError, NotFoundError } from "../errors";
 
 export interface AuthorRepository {
-  findAll: () => Effect.Effect<Author[], Error>
-  findById: (id: AuthorId) => Effect.Effect<Option.Option<Author>, Error>
-  findByIds: (ids: AuthorId[]) => Effect.Effect<Author[], Error>
-  create: (author: CreateAuthorRequest) => Effect.Effect<Author, Error>
-  update: (id: AuthorId, author: UpdateAuthorRequest) => Effect.Effect<Option.Option<Author>, Error>
-  delete: (id: AuthorId) => Effect.Effect<boolean, Error>
-  findByName: (name: string) => Effect.Effect<Author[], Error>
-  findByNationality: (nationality: string) => Effect.Effect<Author[], Error>
+  findAll: () => Effect.Effect<Author[], DatabaseError>;
+  findById: (id: AuthorId) => Effect.Effect<Author, DatabaseError | NotFoundError>;
+  findByIds: (ids: AuthorId[]) => Effect.Effect<Author[], DatabaseError>;
+  create: (author: CreateAuthorRequest) => Effect.Effect<Author, DatabaseError>;
+  update: (
+    id: AuthorId,
+    author: UpdateAuthorRequest,
+  ) => Effect.Effect<Author, DatabaseError | NotFoundError>;
+  delete: (id: AuthorId) => Effect.Effect<void, DatabaseError | NotFoundError>;
+  findByName: (name: string) => Effect.Effect<Author[], DatabaseError>;
+  findByNationality: (nationality: string) => Effect.Effect<Author[], DatabaseError>;
 }
 
-export const AuthorRepository = Context.GenericTag<AuthorRepository>("AuthorRepository")
+export const AuthorRepository =
+  Context.GenericTag<AuthorRepository>("AuthorRepository");
 
 const make = Effect.gen(function* () {
-  const { db } = yield* MongoDB
-  const collection = db.collection("authors")
+  const { db } = yield* MongoDB;
+  const collection = db.collection("authors");
 
-  const findAll = (): Effect.Effect<Author[], Error> =>
-    Effect.promise(() => collection.find({}).toArray()).pipe(
-      Effect.map(authors =>
-        authors.map(author => ({ ...author, _id: author._id.toString() }) as Author)
+  const findAll = (): Effect.Effect<Author[], DatabaseError> =>
+    Effect.tryPromise({
+      try: () => collection.find({}).toArray(),
+      catch: (error) =>
+        new DatabaseError({
+          message: `Failed to find all authors: ${error}`,
+        }),
+    }).pipe(
+      Effect.map((authors) =>
+        authors.map(
+          (author) => ({ ...author, _id: author._id.toString() }) as Author,
+        ),
       ),
-      Effect.mapError(error => new Error(`Failed to find all authors: ${error}`))
-    )
+    );
 
-  const findById = (id: AuthorId): Effect.Effect<Option.Option<Author>, Error> =>
-    Effect.promise(() => collection.findOne({ _id: new ObjectId(id) })).pipe(
-      Effect.map(author =>
+  const findById = (
+    id: AuthorId,
+  ): Effect.Effect<Author, DatabaseError | NotFoundError> =>
+    Effect.tryPromise({
+      try: () => collection.findOne({ _id: new ObjectId(id) }),
+      catch: (error) =>
+        new DatabaseError({
+          message: `Failed to find author by id: ${error}`,
+        }),
+    }).pipe(
+      Effect.flatMap((author) =>
         author
-          ? Option.some({ ...author, _id: author._id.toString() } as Author)
-          : Option.none()
+          ? Effect.succeed({ ...author, _id: author._id.toString() } as Author)
+          : Effect.fail(
+              new NotFoundError({ message: `Author with id ${id} not found` }),
+            ),
       ),
-      Effect.mapError(error => new Error(`Failed to find author by id: ${error}`))
-    )
+    );
 
-  const findByIds = (ids: AuthorId[]): Effect.Effect<Author[], Error> =>
-    Effect.promise(() =>
-      collection.find({ _id: { $in: ids.map(id => new ObjectId(id)) } }).toArray()
-    ).pipe(
-      Effect.map(authors =>
-        authors.map(author => ({ ...author, _id: author._id.toString() }) as Author)
+  const findByIds = (ids: AuthorId[]): Effect.Effect<Author[], DatabaseError> =>
+    Effect.tryPromise({
+      try: () =>
+        collection
+          .find({ _id: { $in: ids.map((id) => new ObjectId(id)) } })
+          .toArray(),
+      catch: (error) =>
+        new DatabaseError({
+          message: `Failed to find authors by ids: ${error}`,
+        }),
+    }).pipe(
+      Effect.map((authors) =>
+        authors.map(
+          (author) => ({ ...author, _id: author._id.toString() }) as Author,
+        ),
       ),
-      Effect.mapError(error => new Error(`Failed to find authors by ids: ${error}`))
-    )
+    );
 
-  const create = (authorData: CreateAuthorRequest): Effect.Effect<Author, Error> =>
+  const create = (
+    authorData: CreateAuthorRequest,
+  ): Effect.Effect<Author, DatabaseError> =>
     Effect.gen(function* () {
-      const now = new Date()
+      const now = new Date();
       const authorToInsert = {
         ...authorData,
         createdAt: now,
-        updatedAt: now
-      }
+        updatedAt: now,
+      };
 
-      const result = yield* Effect.promise(() => collection.insertOne(authorToInsert))
-      const insertedAuthor = yield* Effect.promise(() =>
-        collection.findOne({ _id: result.insertedId })
-      )
+      const result = yield* Effect.tryPromise({
+        try: () => collection.insertOne(authorToInsert),
+        catch: (error) =>
+          new DatabaseError({ message: `Failed to create author: ${error}` }),
+      });
+
+      const insertedAuthor = yield* Effect.tryPromise({
+        try: () => collection.findOne({ _id: result.insertedId }),
+        catch: (error) =>
+          new DatabaseError({
+            message: `Failed to find created author: ${error}`,
+          }),
+      });
 
       if (!insertedAuthor) {
-        yield* Effect.fail(new Error("Failed to create author"))
+        return yield* Effect.fail(
+          new DatabaseError({ message: "Failed to create author" }),
+        );
       }
 
-      return { ...insertedAuthor!, _id: insertedAuthor!._id.toString() } as Author
-    })
+      return {
+        ...insertedAuthor!,
+        _id: insertedAuthor!._id.toString(),
+      } as Author;
+    });
 
-  const update = (id: AuthorId, updateData: UpdateAuthorRequest): Effect.Effect<Option.Option<Author>, Error> =>
+  const update = (
+    id: AuthorId,
+    updateData: UpdateAuthorRequest,
+  ): Effect.Effect<Author, DatabaseError | NotFoundError> =>
     Effect.gen(function* () {
-      const now = new Date()
-      const result = yield* Effect.promise(() =>
-        collection.findOneAndUpdate(
-          { _id: new ObjectId(id) },
-          { $set: { ...updateData, updatedAt: now } },
-          { returnDocument: "after" }
-        )
-      )
+      const now = new Date();
+      const result = yield* Effect.tryPromise({
+        try: () =>
+          collection.findOneAndUpdate(
+            { _id: new ObjectId(id) },
+            { $set: { ...updateData, updatedAt: now } },
+            { returnDocument: "after" },
+          ),
+        catch: (error) =>
+          new DatabaseError({ message: `Failed to update author: ${error}` }),
+      });
 
-      return result
-        ? Option.some({ ...result, _id: result._id.toString() } as Author)
-        : Option.none()
-    })
+      if (!result) {
+        return yield* Effect.fail(
+          new NotFoundError({ message: `Author with id ${id} not found` }),
+        );
+      }
 
-  const deleteAuthor = (id: AuthorId): Effect.Effect<boolean, Error> =>
-    Effect.promise(() => collection.deleteOne({ _id: new ObjectId(id) })).pipe(
-      Effect.map(result => result.deletedCount > 0),
-      Effect.mapError(error => new Error(`Failed to delete author: ${error}`))
-    )
+      return { ...result, _id: result._id.toString() } as Author;
+    });
 
-  const findByName = (name: string): Effect.Effect<Author[], Error> =>
-    Effect.promise(() =>
-      collection.find({
-        $or: [
-          { firstName: new RegExp(name, "i") },
-          { lastName: new RegExp(name, "i") },
-          { fullName: new RegExp(name, "i") }
-        ]
-      }).toArray()
-    ).pipe(
-      Effect.map(authors =>
-        authors.map(author => ({ ...author, _id: author._id.toString() }) as Author)
+  const deleteAuthor = (
+    id: AuthorId,
+  ): Effect.Effect<void, DatabaseError | NotFoundError> =>
+    Effect.tryPromise({
+      try: () => collection.deleteOne({ _id: new ObjectId(id) }),
+      catch: (error) =>
+        new DatabaseError({ message: `Failed to delete author: ${error}` }),
+    }).pipe(
+      Effect.flatMap((result) =>
+        result.deletedCount > 0
+          ? Effect.succeed(undefined)
+          : Effect.fail(
+              new NotFoundError({ message: `Author with id ${id} not found` }),
+            ),
       ),
-      Effect.mapError(error => new Error(`Failed to find authors by name: ${error}`))
-    )
+    );
 
-  const findByNationality = (nationality: string): Effect.Effect<Author[], Error> =>
-    Effect.promise(() =>
-      collection.find({ nationality: new RegExp(nationality, "i") }).toArray()
-    ).pipe(
-      Effect.map(authors =>
-        authors.map(author => ({ ...author, _id: author._id.toString() }) as Author)
+  const findByName = (name: string): Effect.Effect<Author[], DatabaseError> =>
+    Effect.tryPromise({
+      try: () =>
+        collection
+          .find({
+            $or: [
+              { firstName: new RegExp(name, "i") },
+              { lastName: new RegExp(name, "i") },
+              { fullName: new RegExp(name, "i") },
+            ],
+          })
+          .toArray(),
+      catch: (error) =>
+        new DatabaseError({
+          message: `Failed to find authors by name: ${error}`,
+        }),
+    }).pipe(
+      Effect.map((authors) =>
+        authors.map(
+          (author) => ({ ...author, _id: author._id.toString() }) as Author,
+        ),
       ),
-      Effect.mapError(error => new Error(`Failed to find authors by nationality: ${error}`))
-    )
+    );
+
+  const findByNationality = (
+    nationality: string,
+  ): Effect.Effect<Author[], DatabaseError> =>
+    Effect.tryPromise({
+      try: () =>
+        collection
+          .find({ nationality: new RegExp(nationality, "i") })
+          .toArray(),
+      catch: (error) =>
+        new DatabaseError({
+          message: `Failed to find authors by nationality: ${error}`,
+        }),
+    }).pipe(
+      Effect.map((authors) =>
+        authors.map(
+          (author) => ({ ...author, _id: author._id.toString() }) as Author,
+        ),
+      ),
+    );
 
   return {
     findAll,
@@ -125,10 +214,10 @@ const make = Effect.gen(function* () {
     update,
     delete: deleteAuthor,
     findByName,
-    findByNationality
-  }
-})
+    findByNationality,
+  };
+});
 
 export const AuthorRepositoryLive = Layer.effect(AuthorRepository, make).pipe(
-  Layer.provide(MongoDBLive)
-)
+  Layer.provide(MongoDBLive),
+);

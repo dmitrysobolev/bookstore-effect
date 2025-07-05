@@ -11,23 +11,21 @@ import {
 } from "../models/book";
 import { AuthorService, AuthorServiceLive } from "./author-service";
 import { AuthorId } from "../models/author";
+import { AppError, BusinessError, NotFoundError, ValidationError } from "../errors";
 
 export interface BookService {
-  getAllBooks: () => Effect.Effect<Book[], Error>;
-  getBookById: (id: BookId) => Effect.Effect<Option.Option<Book>, Error>;
-  createBook: (book: CreateBookRequest) => Effect.Effect<Book, Error>;
+  getAllBooks: () => Effect.Effect<Book[], AppError>;
+  getBookById: (id: BookId) => Effect.Effect<Book, AppError>;
+  createBook: (book: CreateBookRequest) => Effect.Effect<Book, AppError>;
   updateBook: (
     id: BookId,
     book: UpdateBookRequest,
-  ) => Effect.Effect<Option.Option<Book>, Error>;
-  deleteBook: (id: BookId) => Effect.Effect<boolean, Error>;
-  searchBooks: (query: string) => Effect.Effect<Book[], Error>;
-  getBooksByGenre: (genre: string) => Effect.Effect<Book[], Error>;
-  getBooksByAuthor: (authorName: string) => Effect.Effect<Book[], Error>;
-  updateStock: (
-    id: BookId,
-    quantity: number,
-  ) => Effect.Effect<Option.Option<Book>, Error>;
+  ) => Effect.Effect<Book, AppError>;
+  deleteBook: (id: BookId) => Effect.Effect<void, AppError>;
+  searchBooks: (query: string) => Effect.Effect<Book[], AppError>;
+  getBooksByGenre: (genre: string) => Effect.Effect<Book[], AppError>;
+  getBooksByAuthor: (authorName: string) => Effect.Effect<Book[], AppError>;
+  updateStock: (id: BookId, quantity: number) => Effect.Effect<Book, AppError>;
 }
 
 export const BookService = Context.GenericTag<BookService>("BookService");
@@ -47,8 +45,10 @@ const make = Effect.gen(function* () {
         const authorExists =
           yield* authorService.validateAuthorExists(authorId);
         if (!authorExists) {
-          yield* Effect.fail(
-            new Error(`Author with ID ${authorId} does not exist`),
+          return yield* Effect.fail(
+            new ValidationError({
+              message: `Author with ID ${authorId} does not exist`,
+            }),
           );
         }
       }
@@ -60,8 +60,10 @@ const make = Effect.gen(function* () {
         );
 
       if (existingBook) {
-        yield* Effect.fail(
-          new Error(`Book with ISBN ${bookData.isbn} already exists`),
+        return yield* Effect.fail(
+          new BusinessError({
+            message: `Book with ISBN ${bookData.isbn} already exists`,
+          }),
         );
       }
 
@@ -76,8 +78,10 @@ const make = Effect.gen(function* () {
           const authorExists =
             yield* authorService.validateAuthorExists(authorId);
           if (!authorExists) {
-            yield* Effect.fail(
-              new Error(`Author with ID ${authorId} does not exist`),
+            return yield* Effect.fail(
+              new ValidationError({
+                message: `Author with ID ${authorId} does not exist`,
+              }),
             );
           }
         }
@@ -155,16 +159,13 @@ const make = Effect.gen(function* () {
   const updateStock = (id: BookId, quantity: number) =>
     Effect.gen(function* () {
       const book = yield* bookRepository.findById(id);
-
-      if (Option.isNone(book)) {
-        return Option.none();
-      }
-
-      const currentBook = book.value;
+      const currentBook = book;
       const newStock = currentBook.stock + quantity;
 
       if (newStock < 0) {
-        yield* Effect.fail(new Error("Insufficient stock"));
+        return yield* Effect.fail(
+          new BusinessError({ message: "Insufficient stock" }),
+        );
       }
 
       return yield* bookRepository.update(id, { stock: newStock });

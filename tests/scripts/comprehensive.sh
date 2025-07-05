@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 # Comprehensive Bookstore API Test Suite
 # This script performs automated testing of the entire bookstore API
 
@@ -34,10 +36,10 @@ log_test() {
     TOTAL_TESTS=$((TOTAL_TESTS + 1))
 
     if [ "$status" = "PASS" ]; then
-        echo -e "${GREEN}✓ PASS${NC} - $test_name"
+        echo -e "${GREEN}✓ PASS${NC} - $test_name" >&2
         PASSED_TESTS=$((PASSED_TESTS + 1))
     else
-        echo -e "${RED}✗ FAIL${NC} - $test_name: $message"
+        echo -e "${RED}✗ FAIL${NC} - $test_name: $message" >&2
         FAILED_TESTS=$((FAILED_TESTS + 1))
     fi
 }
@@ -50,8 +52,8 @@ api_call() {
     local expected_status="$4"
     local test_name="$5"
 
-    echo -e "${BLUE}🔄 Testing: $test_name${NC}"
-    echo -e "${YELLOW}$method $BASE_URL$endpoint${NC}"
+    echo -e "${BLUE}🔄 Testing: $test_name${NC}" >&2
+    echo -e "${YELLOW}$method $BASE_URL$endpoint${NC}" >&2
 
     if [ -n "$data" ]; then
         response=$(curl -s -w "\n%{http_code}" -X "$method" \
@@ -73,7 +75,7 @@ api_call() {
         return 0
     else
         log_test "$test_name" "FAIL" "Expected status $expected_status, got $status_code"
-        echo "Response: $response_body"
+        echo "Response: $response_body" >&2
         return 1
     fi
 }
@@ -125,6 +127,23 @@ cleanup() {
     done
 
     echo -e "${GREEN}✓ Cleanup completed${NC}"
+}
+
+# Function to perform a hard cleanup of the database
+hard_cleanup() {
+    echo -e "${BLUE}🧹 Performing hard cleanup...${NC}"
+    # Get all book IDs and delete them
+    all_book_ids=$(curl -s "$BASE_URL/books" | jq -r '.[]._id')
+    for id in $all_book_ids; do
+        curl -s -X DELETE "$BASE_URL/books/$id" > /dev/null
+    done
+
+    # Get all author IDs and delete them
+    all_author_ids=$(curl -s "$BASE_URL/authors" | jq -r '.[]._id')
+    for id in $all_author_ids; do
+        curl -s -X DELETE "$BASE_URL/authors/$id" > /dev/null
+    done
+    echo -e "${GREEN}✓ Hard cleanup completed${NC}"
 }
 
 # Function to run author tests
@@ -191,7 +210,7 @@ test_authors() {
     fi
 
     # Test 4: Try to create duplicate author (should fail)
-    api_call "POST" "/authors" "$author1_data" "500" "Create duplicate author (should fail)"
+    api_call "POST" "/authors" "$author1_data" "409" "Create duplicate author (should fail)"
 
     # Test 5: Get all authors
     api_call "GET" "/authors" "" "200" "Get all authors"
@@ -320,7 +339,7 @@ test_books() {
             \"stock\": 10,
             \"genre\": \"Fiction\"
         }"
-        api_call "POST" "/books" "$duplicate_isbn_data" "500" "Create book with duplicate ISBN (should fail)"
+        api_call "POST" "/books" "$duplicate_isbn_data" "409" "Create book with duplicate ISBN (should fail)"
     fi
 
     # Test 6: Try to create book with non-existent author (should fail)
@@ -332,7 +351,7 @@ test_books() {
         "stock": 10,
         "genre": "Fiction"
     }'
-    api_call "POST" "/books" "$invalid_author_data" "500" "Create book with invalid author (should fail)"
+    api_call "POST" "/books" "$invalid_author_data" "400" "Create book with invalid author (should fail)"
 
     # Test 7: Get all books
     api_call "GET" "/books" "" "200" "Get all books"
@@ -397,7 +416,7 @@ test_error_scenarios() {
     api_call "POST" "/authors" "invalid json" "400" "Invalid JSON payload"
 
     # Test 2: Missing required fields
-    api_call "POST" "/authors" '{"firstName": "Test"}' "500" "Missing required fields"
+    api_call "POST" "/authors" '{"firstName": "Test"}' "400" "Missing required fields"
 
     # Test 3: Invalid book price (negative)
     if [ -n "$AUTHOR1_ID" ]; then
@@ -409,7 +428,7 @@ test_error_scenarios() {
             \"stock\": 10,
             \"genre\": \"Fiction\"
         }"
-        api_call "POST" "/books" "$invalid_price_data" "500" "Book with negative price (should fail)"
+        api_call "POST" "/books" "$invalid_price_data" "400" "Book with negative price (should fail)"
     fi
 
     # Test 4: Non-existent endpoint
@@ -508,6 +527,7 @@ main() {
 
     # Setup
     check_server
+    hard_cleanup
     setup_test_environment
 
     # Set up cleanup trap
