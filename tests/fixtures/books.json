@@ -1,0 +1,182 @@
+[
+  {
+    "title": "1984",
+    "isbn": "978-0452284234",
+    "price": 15.99,
+    "stock": 50,
+    "genre": "Dystopian Fiction",
+    "description": "A dystopian social science fiction novel and cautionary tale about the dangers of totalitarianism. Set in Airstrip One, formerly Great Britain, a province of the superstate Oceania.",
+    "publishedDate": "1949-06-08T00:00:00.000Z",
+    "authorNames": ["George Orwell"]
+  },
+  {
+    "title": "Animal Farm",
+    "isbn": "978-0452284240",
+    "price": 13.99,
+    "stock": 35,
+    "genre": "Political Satire",
+    "description": "An allegorical novella about a group of farm animals who rebel against their human farmer, hoping to create a society where the animals can be equal, free, and happy.",
+    "publishedDate": "1945-08-17T00:00:00.000Z",
+    "authorNames": ["George Orwell"]
+  },
+  {
+    "title": "Pride and Prejudice",
+    "isbn": "978-0141439518",
+    "price": 12.99,
+    "stock": 30,
+    "genre": "Romance",
+    "description": "A romantic novel of manners written by Jane Austen in 1813. It follows the character development of Elizabeth Bennet, the dynamic protagonist of the book who learns about the repercussions of hasty judgments.",
+    "publishedDate": "1813-01-28T00:00:00.000Z",
+    "authorNames": ["Jane Austen"]
+  },
+  {
+    "title": "Emma",
+    "isbn": "978-0141439587",
+    "price": 14.50,
+    "stock": 25,
+    "genre": "Romance",
+    "description": "A novel about youthful hubris and romantic misunderstandings. It is set in the fictional country village of Highbury and the surrounding estates of Hartfield, Randalls, and Donwell Abbey.",
+    "publishedDate": "1815-12-23T00:00:00.000Z",
+    "authorNames": ["Jane Austen"]
+  },
+  {
+    "title": "The Shining",
+    "isbn": "978-0307743657",
+    "price": 16.99,
+    "stock": 25,
+    "genre": "Horror",
+    "description": "A horror novel about a family that becomes caretakers at an isolated hotel for the winter where a sinister presence influences the father into violence.",
+    "publishedDate": "1977-01-28T00:00:00.000Z",
+    "authorNames": ["Stephen King"]
+  },
+  {
+    "title": "It",
+    "isbn": "978-1501142970",
+    "price": 18.99,
+    "stock": 40,
+    "genre": "Horror",
+    "description": "A supernatural horror novel about seven children who are terrorized by an entity that exploits the fears of its victims to disguise itself while hunting its prey.",
+    "publishedDate": "1986-09-15T00:00:00.000Z",
+    "authorNames": ["Stephen King"]
+  },
+  {
+    "title": "Murder on the Orient Express",
+    "isbn": "978-0062693662",
+    "price": 14.99,
+    "stock": 20,
+    "genre": "Mystery",
+    "description": "A detective novel featuring the Belgian detective Hercule Poirot. It was first published in the United Kingdom by the Collins Crime Club and features the famous detective solving a murder aboard the famous train.",
+    "publishedDate": "1934-01-01T00:00:00.000Z",
+    "authorNames": ["Agatha Christie"]
+  },
+  {
+    "title": "And Then There Were None",
+    "isbn": "978-0062073488",
+    "price": 13.99,
+    "stock": 45,
+    "genre": "Mystery",
+    "description": "A mystery novel and the world's best-selling mystery novel. Ten strangers, each with dark secrets, are invited to an island where they are killed off one by one.",
+    "publishedDate": "1939-11-06T00:00:00.000Z",
+    "authorNames": ["Agatha Christie"]
+  },
+  {
+    "title": "Harry Potter and the Philosopher's Stone",
+    "isbn": "978-0747532699",
+    "price": 19.99,
+    "stock": 60,
+    "genre": "Fantasy",
+    "description": "The first novel in the Harry Potter series and Rowling's debut novel, it follows Harry Potter, a young wizard who discovers his magical heritage on his eleventh birthday.",
+    "publishedDate": "1997-06-26T00:00:00.000Z",
+    "authorNames": ["J.K. Rowling"]
+  },
+  {
+    "title": "Harry Potter and the Chamber of Secrets",
+    "isbn": "978-0747538493",
+    "price": 19.99,
+    "stock": 55,
+    "genre": "Fantasy",
+    "description": "The second novel in the Harry Potter series. The plot follows Harry's second year at Hogwarts School of Witchcraft and Wizardry, during which a series of messages on the walls of the school's corridors warn that the 'Chamber of Secrets' has been opened.",
+    "publishedDate": "1998-07-02T00:00:00.000Z",
+    "authorNames": ["J.K. Rowling"]
+  },
+  {
+    "title": "The Old Man and the Sea",
+    "isbn": "978-0684801223",
+    "price": 11.99,
+    "stock": 30,
+    "genre": "Literary Fiction",
+    "description": "A short novel written by American author Ernest Hemingway in 1951 in Cayo Blanco, and published in 1952. It was the last major work of fiction written by Hemingway that was published during his lifetime.",
+    "publishedDate": "1952-09-01T00:00:00.000Z",
+    "authorNames": ["Ernest Hemingway"]
+  },
+  {
+    "title": "For Whom the Bell Tolls",
+    "isbn": "978-0684803357",
+    "price": 15.99,
+    "stock": 28,
+    "genre": "War Fiction",
+    "description": "A novel published in 1940. It tells the story of Robert Jordan, a young American dynamiter attached to a Republican guerrilla unit during the Spanish Civil War.",
+    "publishedDate": "1940-10-21T00:00:00.000Z",
+    "authorNames": ["Ernest Hemingway"]
+  },
+  {
+    "title": "I Know Why the Caged Bird Sings",
+    "isbn": "978-0345514400",
+    "price": 13.50,
+    "stock": 35,
+    "genre": "Autobiography",
+    "description": "A 1969 autobiography describing the early years of American writer and poet Maya Angelou. The first in a seven-volume series, it is a coming-of-age story that illustrates how strength of character and a love of literature can help overcome racism and trauma.",
+    "publishedDate": "1969-01-01T00:00:00.000Z",
+    "authorNames": ["Maya Angelou"]
+  },
+  {
+    "title": "Norwegian Wood",
+    "isbn": "978-0375704024",
+    "price": 16.50,
+    "stock": 22,
+    "genre": "Literary Fiction",
+    "description": "A 1987 novel by Japanese author Haruki Murakami. Set in Tokyo during the late 1960s, the story centers on Toru Watanabe, a quiet and serious young man, and his relationships with two very different women.",
+    "publishedDate": "1987-08-04T00:00:00.000Z",
+    "authorNames": ["Haruki Murakami"]
+  },
+  {
+    "title": "Kafka on the Shore",
+    "isbn": "978-1400079278",
+    "price": 17.99,
+    "stock": 18,
+    "genre": "Magical Realism",
+    "description": "A 2002 novel by Japanese author Haruki Murakami. Its chapters alternate between two characters: a fifteen-year-old boy named Kafka who runs away from home to escape his father's oedipal curse, and an aging simpleton called Mr. Nakata who has the ability to talk to cats.",
+    "publishedDate": "2002-09-12T00:00:00.000Z",
+    "authorNames": ["Haruki Murakami"]
+  },
+  {
+    "title": "Collaborative Work",
+    "isbn": "978-9999999999",
+    "price": 24.99,
+    "stock": 10,
+    "genre": "Fiction",
+    "description": "A fictional collaborative work between multiple renowned authors showcasing different writing styles and perspectives.",
+    "publishedDate": "2023-01-15T00:00:00.000Z",
+    "authorNames": ["George Orwell", "Jane Austen"]
+  },
+  {
+    "title": "Modern Mystery Collection",
+    "isbn": "978-8888888888",
+    "price": 22.50,
+    "stock": 15,
+    "genre": "Mystery",
+    "description": "A collection of modern mystery stories featuring contemporary detective work and psychological thrillers.",
+    "publishedDate": "2023-06-01T00:00:00.000Z",
+    "authorNames": ["Agatha Christie", "Stephen King"]
+  },
+  {
+    "title": "International Voices",
+    "isbn": "978-7777777777",
+    "price": 21.99,
+    "stock": 12,
+    "genre": "Anthology",
+    "description": "An anthology featuring diverse voices from different cultures and backgrounds, exploring universal themes of human experience.",
+    "publishedDate": "2023-03-20T00:00:00.000Z",
+    "authorNames": ["Maya Angelou", "Haruki Murakami", "J.K. Rowling"]
+  }
+]

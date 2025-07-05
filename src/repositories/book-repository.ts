@@ -1,6 +1,6 @@
 import { Context, Effect, Layer, Option } from "effect";
 import { ObjectId } from "mongodb";
-import { MongoDB } from "../database";
+import { MongoDB, MongoDBLive } from "../database";
 import {
   Book,
   BookId,
@@ -26,23 +26,29 @@ const make = Effect.gen(function* () {
   const { db } = yield* MongoDB;
   const collection = db.collection("books");
 
-  const findAll = () =>
+  const findAll = (): Effect.Effect<Book[], Error> =>
     Effect.promise(() => collection.find({}).toArray()).pipe(
       Effect.map((books) =>
-        books.map((book) => ({ ...book, _id: book._id.toString() })),
+        books.map((book) => ({ ...book, _id: book._id.toString() }) as Book),
+      ),
+      Effect.mapError(
+        (error) => new Error(`Failed to find all books: ${error}`),
       ),
     );
 
-  const findById = (id: BookId) =>
+  const findById = (id: BookId): Effect.Effect<Option.Option<Book>, Error> =>
     Effect.promise(() => collection.findOne({ _id: new ObjectId(id) })).pipe(
       Effect.map((book) =>
         book
-          ? Option.some({ ...book, _id: book._id.toString() })
+          ? Option.some({ ...book, _id: book._id.toString() } as Book)
           : Option.none(),
+      ),
+      Effect.mapError(
+        (error) => new Error(`Failed to find book by id: ${error}`),
       ),
     );
 
-  const create = (bookData: CreateBookRequest) =>
+  const create = (bookData: CreateBookRequest): Effect.Effect<Book, Error> =>
     Effect.gen(function* () {
       const now = new Date();
       const bookToInsert = {
@@ -62,10 +68,13 @@ const make = Effect.gen(function* () {
         yield* Effect.fail(new Error("Failed to create book"));
       }
 
-      return { ...insertedBook!, _id: insertedBook!._id.toString() };
+      return { ...insertedBook!, _id: insertedBook!._id.toString() } as Book;
     });
 
-  const update = (id: BookId, updateData: UpdateBookRequest) =>
+  const update = (
+    id: BookId,
+    updateData: UpdateBookRequest,
+  ): Effect.Effect<Option.Option<Book>, Error> =>
     Effect.gen(function* () {
       const now = new Date();
       const result = yield* Effect.promise(() =>
@@ -77,13 +86,14 @@ const make = Effect.gen(function* () {
       );
 
       return result
-        ? Option.some({ ...result, _id: result._id.toString() })
+        ? Option.some({ ...result, _id: result._id.toString() } as Book)
         : Option.none();
     });
 
-  const deleteBook = (id: BookId) =>
+  const deleteBook = (id: BookId): Effect.Effect<boolean, Error> =>
     Effect.promise(() => collection.deleteOne({ _id: new ObjectId(id) })).pipe(
       Effect.map((result) => result.deletedCount > 0),
+      Effect.mapError((error) => new Error(`Failed to delete book: ${error}`)),
     );
 
   return {
@@ -96,5 +106,5 @@ const make = Effect.gen(function* () {
 });
 
 export const BookRepositoryLive = Layer.effect(BookRepository, make).pipe(
-  Layer.provide(MongoDB),
+  Layer.provide(MongoDBLive),
 );

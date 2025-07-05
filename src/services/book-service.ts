@@ -1,12 +1,15 @@
 import { Context, Effect, Layer, Option } from "effect";
-import { BookRepository } from "../repositories/book-repository";
+import {
+  BookRepository,
+  BookRepositoryLive,
+} from "../repositories/book-repository";
 import {
   Book,
   BookId,
   CreateBookRequest,
   UpdateBookRequest,
 } from "../models/book";
-import { AuthorService } from "./author-service";
+import { AuthorService, AuthorServiceLive } from "./author-service";
 import { AuthorId } from "../models/author";
 
 export interface BookService {
@@ -20,7 +23,7 @@ export interface BookService {
   deleteBook: (id: BookId) => Effect.Effect<boolean, Error>;
   searchBooks: (query: string) => Effect.Effect<Book[], Error>;
   getBooksByGenre: (genre: string) => Effect.Effect<Book[], Error>;
-  getBooksByAuthor: (author: string) => Effect.Effect<Book[], Error>;
+  getBooksByAuthor: (authorName: string) => Effect.Effect<Book[], Error>;
   updateStock: (
     id: BookId,
     quantity: number,
@@ -101,7 +104,9 @@ const make = Effect.gen(function* () {
         }
 
         // Check authors by getting author details
-        const authors = yield* authorService.getAuthorsByIds(book.authorIds);
+        const authors = yield* authorService.getAuthorsByIds([
+          ...book.authorIds,
+        ]);
         const authorMatch = authors.some(
           (author) =>
             author.firstName.toLowerCase().includes(query.toLowerCase()) ||
@@ -179,6 +184,6 @@ const make = Effect.gen(function* () {
 });
 
 export const BookServiceLive = Layer.effect(BookService, make).pipe(
-  Layer.provide(BookRepository),
-  Layer.provide(AuthorService),
+  Layer.provide(BookRepositoryLive),
+  Layer.provide(AuthorServiceLive),
 );

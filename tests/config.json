@@ -1,0 +1,156 @@
+{
+  "test": {
+    "mongodb": {
+      "uri": "mongodb://localhost:27017",
+      "database": "bookstore_test",
+      "options": {
+        "connectTimeoutMS": 5000,
+        "serverSelectionTimeoutMS": 5000
+      }
+    },
+    "server": {
+      "port": 3001,
+      "host": "localhost",
+      "timeout": 30000
+    },
+    "api": {
+      "baseUrl": "http://localhost:3001/api",
+      "timeout": 5000,
+      "retries": 3
+    },
+    "cleanup": {
+      "autoCleanup": true,
+      "cleanupTimeout": 10000,
+      "preserveData": false
+    },
+    "logging": {
+      "level": "info",
+      "console": true
+    }
+  },
+  "development": {
+    "mongodb": {
+      "uri": "mongodb://localhost:27017",
+      "database": "bookstore",
+      "options": {
+        "connectTimeoutMS": 10000,
+        "serverSelectionTimeoutMS": 10000
+      }
+    },
+    "server": {
+      "port": 3000,
+      "host": "localhost"
+    },
+    "api": {
+      "baseUrl": "http://localhost:3000/api",
+      "timeout": 10000,
+      "retries": 1
+    }
+  },
+  "fixtures": {
+    "authors": [
+      {
+        "firstName": "George",
+        "lastName": "Orwell",
+        "fullName": "George Orwell",
+        "biography": "English novelist, essayist, journalist and critic",
+        "birthDate": "1903-06-25T00:00:00.000Z",
+        "nationality": "British",
+        "website": "https://en.wikipedia.org/wiki/George_Orwell"
+      },
+      {
+        "firstName": "Jane",
+        "lastName": "Austen",
+        "fullName": "Jane Austen",
+        "biography": "English novelist known for her social commentary",
+        "birthDate": "1775-12-16T00:00:00.000Z",
+        "nationality": "British",
+        "website": "https://en.wikipedia.org/wiki/Jane_Austen"
+      },
+      {
+        "firstName": "Stephen",
+        "lastName": "King",
+        "fullName": "Stephen King",
+        "biography": "American author of horror, supernatural fiction, suspense, crime, science-fiction, and fantasy novels",
+        "birthDate": "1947-09-21T00:00:00.000Z",
+        "nationality": "American",
+        "website": "https://stephenking.com"
+      }
+    ],
+    "books": [
+      {
+        "title": "1984",
+        "isbn": "978-0452284234",
+        "price": 15.99,
+        "stock": 50,
+        "genre": "Dystopian Fiction",
+        "description": "A dystopian social science fiction novel and cautionary tale",
+        "publishedDate": "1949-06-08T00:00:00.000Z"
+      },
+      {
+        "title": "Pride and Prejudice",
+        "isbn": "978-0141439518",
+        "price": 12.99,
+        "stock": 30,
+        "genre": "Romance",
+        "description": "A romantic novel of manners written by Jane Austen",
+        "publishedDate": "1813-01-28T00:00:00.000Z"
+      },
+      {
+        "title": "The Shining",
+        "isbn": "978-0307743657",
+        "price": 16.99,
+        "stock": 25,
+        "genre": "Horror",
+        "description": "A horror novel about a family that becomes caretakers at an isolated hotel",
+        "publishedDate": "1977-01-28T00:00:00.000Z"
+      }
+    ]
+  },
+  "testSuites": {
+    "smoke": {
+      "description": "Quick validation tests",
+      "timeout": 30000,
+      "tests": [
+        "basic-endpoints",
+        "author-creation",
+        "book-creation",
+        "utility-endpoints"
+      ]
+    },
+    "integration": {
+      "description": "Full API integration tests",
+      "timeout": 120000,
+      "tests": [
+        "author-crud",
+        "book-crud",
+        "search-functionality",
+        "data-validation",
+        "error-handling",
+        "relationships"
+      ]
+    },
+    "performance": {
+      "description": "Performance and load tests",
+      "timeout": 300000,
+      "tests": [
+        "bulk-operations",
+        "concurrent-requests",
+        "large-datasets",
+        "query-performance"
+      ]
+    }
+  },
+  "validation": {
+    "schemas": {
+      "validateResponses": true,
+      "strictMode": true
+    },
+    "businessRules": {
+      "uniqueISBN": true,
+      "uniqueAuthorNames": true,
+      "authorExistenceCheck": true,
+      "stockValidation": true
+    }
+  }
+}

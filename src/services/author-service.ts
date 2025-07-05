@@ -1,5 +1,8 @@
 import { Context, Effect, Layer, Option } from "effect";
-import { AuthorRepository } from "../repositories/author-repository";
+import {
+  AuthorRepository,
+  AuthorRepositoryLive,
+} from "../repositories/author-repository";
 import {
   Author,
   AuthorId,
@@ -124,5 +127,5 @@ const make = Effect.gen(function* () {
 });
 
 export const AuthorServiceLive = Layer.effect(AuthorService, make).pipe(
-  Layer.provide(AuthorRepository),
+  Layer.provide(AuthorRepositoryLive),
 );

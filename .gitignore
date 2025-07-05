@@ -107,3 +107,19 @@ logs
 
 # Claude files
 .claude
+
+# Test artifacts
+server.log
+*.test.js
+*.test.ts
+coverage/
+.nyc_output/
+
+# Test databases
+*_test
+bookstore_test
+
+# Temporary test files
+temp/
+tmp/
+*.tmp

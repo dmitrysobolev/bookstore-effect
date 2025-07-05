@@ -1,0 +1,116 @@
+[
+  {
+    "firstName": "George",
+    "lastName": "Orwell",
+    "fullName": "George Orwell",
+    "biography": "Eric Arthur Blair, known by his pen name George Orwell, was an English novelist, essayist, journalist and critic. His work is characterised by lucid prose, biting social criticism, opposition to totalitarianism, and outspoken support of democratic socialism.",
+    "birthDate": "1903-06-25T00:00:00.000Z",
+    "nationality": "British",
+    "website": "https://en.wikipedia.org/wiki/George_Orwell",
+    "socialLinks": {
+      "twitter": "@GeorgeOrwell",
+      "facebook": "GeorgeOrwellOfficial"
+    },
+    "profileImageUrl": "https://example.com/images/george-orwell.jpg"
+  },
+  {
+    "firstName": "Jane",
+    "lastName": "Austen",
+    "fullName": "Jane Austen",
+    "biography": "Jane Austen was an English novelist known primarily for her six major novels, which interpret, critique and comment upon the British landed gentry at the end of the 18th century. Austen's plots often explore the dependence of women on marriage in the pursuit of favourable social standing and economic security.",
+    "birthDate": "1775-12-16T00:00:00.000Z",
+    "nationality": "British",
+    "website": "https://en.wikipedia.org/wiki/Jane_Austen",
+    "socialLinks": {
+      "twitter": "@JaneAusten",
+      "facebook": "JaneAustenOfficial",
+      "instagram": "@janeausten"
+    },
+    "profileImageUrl": "https://example.com/images/jane-austen.jpg"
+  },
+  {
+    "firstName": "Stephen",
+    "lastName": "King",
+    "fullName": "Stephen King",
+    "biography": "Stephen Edwin King is an American author of horror, supernatural fiction, suspense, crime, science-fiction, and fantasy novels. His books have sold more than 350 million copies, and many have been adapted into films, television series, miniseries, and comic books.",
+    "birthDate": "1947-09-21T00:00:00.000Z",
+    "nationality": "American",
+    "website": "https://stephenking.com",
+    "socialLinks": {
+      "twitter": "@StephenKing",
+      "facebook": "StephenKingWriter",
+      "instagram": "@stephenking"
+    },
+    "profileImageUrl": "https://example.com/images/stephen-king.jpg"
+  },
+  {
+    "firstName": "Agatha",
+    "lastName": "Christie",
+    "fullName": "Agatha Christie",
+    "biography": "Dame Agatha Mary Clarissa Christie was an English writer known for her sixty-six detective novels and fourteen short story collections, particularly those revolving around fictional detectives Hercule Poirot and Miss Jane Marple.",
+    "birthDate": "1890-09-15T00:00:00.000Z",
+    "nationality": "British",
+    "website": "https://en.wikipedia.org/wiki/Agatha_Christie",
+    "socialLinks": {
+      "twitter": "@AgathaChristie",
+      "facebook": "AgathaChristieOfficial"
+    },
+    "profileImageUrl": "https://example.com/images/agatha-christie.jpg"
+  },
+  {
+    "firstName": "J.K.",
+    "lastName": "Rowling",
+    "fullName": "J.K. Rowling",
+    "biography": "Joanne Rowling, known by her pen name J. K. Rowling, is a British author and philanthropist. She wrote the Harry Potter series of seven fantasy novels, which have sold over 500 million copies and have been translated into at least 70 languages.",
+    "birthDate": "1965-07-31T00:00:00.000Z",
+    "nationality": "British",
+    "website": "https://www.jkrowling.com",
+    "socialLinks": {
+      "twitter": "@jk_rowling",
+      "facebook": "JKRowlingOfficial",
+      "instagram": "@jkrowling_official"
+    },
+    "profileImageUrl": "https://example.com/images/jk-rowling.jpg"
+  },
+  {
+    "firstName": "Ernest",
+    "lastName": "Hemingway",
+    "fullName": "Ernest Hemingway",
+    "biography": "Ernest Miller Hemingway was an American novelist, short-story writer, and journalist. His economical and understated style—which he termed the iceberg theory—had a strong influence on 20th-century fiction.",
+    "birthDate": "1899-07-21T00:00:00.000Z",
+    "nationality": "American",
+    "website": "https://en.wikipedia.org/wiki/Ernest_Hemingway",
+    "socialLinks": {
+      "facebook": "ErnestHemingwayOfficial"
+    },
+    "profileImageUrl": "https://example.com/images/ernest-hemingway.jpg"
+  },
+  {
+    "firstName": "Maya",
+    "lastName": "Angelou",
+    "fullName": "Maya Angelou",
+    "biography": "Maya Angelou was an American memoirist, popular poet, and civil rights activist. She published seven autobiographies, three books of essays, several books of poetry, and is credited with a list of plays, movies, and television shows spanning over 50 years.",
+    "birthDate": "1928-04-04T00:00:00.000Z",
+    "nationality": "American",
+    "website": "https://en.wikipedia.org/wiki/Maya_Angelou",
+    "socialLinks": {
+      "facebook": "MayaAngelouOfficial",
+      "instagram": "@mayaangelou"
+    },
+    "profileImageUrl": "https://example.com/images/maya-angelou.jpg"
+  },
+  {
+    "firstName": "Haruki",
+    "lastName": "Murakami",
+    "fullName": "Haruki Murakami",
+    "biography": "Haruki Murakami is a Japanese writer. His novels, essays, and short stories have been bestsellers in Japan as well as internationally, with his work translated into 50 languages and selling millions of copies outside Japan.",
+    "birthDate": "1949-01-12T00:00:00.000Z",
+    "nationality": "Japanese",
+    "website": "https://en.wikipedia.org/wiki/Haruki_Murakami",
+    "socialLinks": {
+      "twitter": "@harukimurakami",
+      "facebook": "HarukiMurakamiOfficial"
+    },
+    "profileImageUrl": "https://example.com/images/haruki-murakami.jpg"
+  }
+]
