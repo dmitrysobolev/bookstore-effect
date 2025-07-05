@@ -1,6 +1,6 @@
-# Bookstore Management API
+# Bookstore Effect - Management API
 
-A TypeScript bookstore management system built with Effect, Express.js, and MongoDB. This API provides comprehensive CRUD operations for both books and authors with advanced search and filtering capabilities.
+A TypeScript bookstore management system built with Effect, Express.js, and MongoDB. This API provides comprehensive CRUD operations for both books and authors with advanced search and filtering capabilities, showcasing the power of Effect for functional programming in TypeScript.
 
 ## 🚀 Features
 

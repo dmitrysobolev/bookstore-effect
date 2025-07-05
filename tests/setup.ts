@@ -9,7 +9,7 @@ beforeAll(async () => {
   // Start in-memory MongoDB instance for testing
   mongoServer = await MongoMemoryServer.create({
     instance: {
-      dbName: "bookstore_test",
+      dbName: "bookstore_effect_test",
     },
   });
 
@@ -17,7 +17,7 @@ beforeAll(async () => {
 
   // Set environment variables for tests
   process.env.MONGODB_URI = mongoUri;
-  process.env.DB_NAME = "bookstore_test";
+  process.env.DB_NAME = "bookstore_effect_test";
   process.env.NODE_ENV = "test";
 
   // Create MongoDB client for test utilities
@@ -39,7 +39,7 @@ afterAll(async () => {
 // Clean database between tests
 beforeEach(async () => {
   if (mongoClient) {
-    const db = mongoClient.db("bookstore_test");
+    const db = mongoClient.db("bookstore_effect_test");
     const collections = await db.listCollections().toArray();
 
     // Drop all collections
@@ -54,7 +54,7 @@ export const getTestDb = () => {
   if (!mongoClient) {
     throw new Error("MongoDB client not initialized");
   }
-  return mongoClient.db("bookstore_test");
+  return mongoClient.db("bookstore_effect_test");
 };
 
 export const clearTestDb = async () => {

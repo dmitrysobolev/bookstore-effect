@@ -1,5 +1,5 @@
 {
-  "name": "bookstore",
+  "name": "bookstore-effect",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {

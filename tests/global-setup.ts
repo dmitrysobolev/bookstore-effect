@@ -8,7 +8,7 @@ export default async function globalSetup() {
   // Start in-memory MongoDB instance
   mongoServer = await MongoMemoryServer.create({
     instance: {
-      dbName: "bookstore_test",
+      dbName: "bookstore_effect_test",
     },
   });
 
@@ -16,7 +16,7 @@ export default async function globalSetup() {
 
   // Set global environment variables for all tests
   process.env.MONGODB_URI = mongoUri;
-  process.env.DB_NAME = "bookstore_test";
+  process.env.DB_NAME = "bookstore_effect_test";
   process.env.NODE_ENV = "test";
   process.env.PORT = "3001";
 
